@@ -416,4 +416,30 @@ mod test {
         let token = NearToken::from_yoctonear(1_234_567_890_123_456_789_000_000);
         assert_eq!(token.exact_amount_display(), "1.234567890123456789 NEAR");
     }
+
+    #[test]
+    fn whole_unit_constructors_accept_the_largest_amount_that_fits() {
+        assert_eq!(
+            NearToken::from_near(u128::MAX / 10u128.pow(24)).as_yoctonear(),
+            u128::MAX / 10u128.pow(24) * 10u128.pow(24)
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "overflow")]
+    fn from_near_panics_on_overflow() {
+        NearToken::from_near(std::hint::black_box(u128::MAX / 10u128.pow(24) + 1));
+    }
+
+    #[test]
+    #[should_panic(expected = "overflow")]
+    fn from_millinear_panics_on_overflow() {
+        NearToken::from_millinear(std::hint::black_box(u128::MAX / 10u128.pow(21) + 1));
+    }
+
+    #[test]
+    #[should_panic(expected = "overflow")]
+    fn from_micronear_panics_on_overflow() {
+        NearToken::from_micronear(std::hint::black_box(u128::MAX / 10u128.pow(18) + 1));
+    }
 }
