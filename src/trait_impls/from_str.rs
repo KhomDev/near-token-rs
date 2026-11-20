@@ -157,6 +157,18 @@ mod test {
     }
 
     #[test]
+    fn test_from_str_leading_whitespace() {
+        assert_eq!(
+            NearToken::from_str(" 1 NEAR").unwrap(),
+            NearToken::from_near(1)
+        );
+        assert_eq!(
+            NearToken::from_str("  1.5 NEAR").unwrap(),
+            NearToken::from_yoctonear(1_500_000_000_000_000_000_000_000)
+        );
+    }
+
+    #[test]
     fn test_from_str_large_fractional_part() {
         let near_gas = NearToken::from_str("100.1111122222333 ynear").unwrap_err(); // 13 digits after "."
         assert_eq!(
